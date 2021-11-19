@@ -4,6 +4,7 @@ game_start = False
 MAX_POINTS = 21
 player = ''
 player_points = []
+player_state = [] #0 play, 1 stay, 2 bust, 3 win
 NUMBER_OPPONENTS = 2
 
 def restart():
@@ -55,7 +56,7 @@ def display_hands():
 
 def sum_points():
     player_points.clear()
-    for name, i in zip(player_names, hands_list):
+    for i in hands_list:
         cards = i.get_ranks()
         card_values = []
         card_sum = 0
@@ -64,10 +65,14 @@ def sum_points():
                 card = 10
             card_values.append(card)
         player_points.append(sum(card_values))
-
-    if(player_points > MAX_POINTS):
-        done_playing = True
-            
+#       update_state(i)
+        
+def update_state(i):
+    print(player_points[i])
+    if(player_points[i] > MAX_POINTS):
+        state = 2
+        player_state[i] = state
+    
 def display_points():
     for name, i in zip(player_names, player_points):
         print(name,"'s points:",i, "\n")    
@@ -117,8 +122,13 @@ hit(dealer_hand)
 print(player_points)
 hit(player_hand)
 print(player_points)
+print(player_points[0])
+print(player_state)
 print("All hands have been dealt")
 
 #When all players stay or bust, dealer shows full hand then stays or hits
 
+
+#cards = player_hand.get_ranks()
+#print(sum(cards[0:]))
 #play = restart()
