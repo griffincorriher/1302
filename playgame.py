@@ -1,11 +1,11 @@
 from Card import Card, Hand, Deck
 
-game_start = False
+NUMBER_OPPONENTS = 2
 MAX_POINTS = 21
 player = ''
 player_points = []
-NUMBER_OPPONENTS = 2
 player_state = [0]*(2+NUMBER_OPPONENTS) #0 play, 1 stay, 2 bust, 3 win
+game_start = False
 
 def restart():
     global play
@@ -27,10 +27,8 @@ def play_game():
 def hit(hand):
     #add another card to hand, sum cards in hand and return value
     hand.add(game_deck.deal())
-    points = sum(hand.get_ranks())
 #    sum_points()
     display_hands()
-    return points
     
 def stand(player):
     #return hand numerical value after standing
@@ -121,6 +119,7 @@ hit(dealer_hand)
 
 hit(player_hand)
 hit(player_hand)
+hit(dealer_hand)
 print(player_points)
 print(player_state)
 print("All hands have been dealt")
@@ -131,4 +130,3 @@ print("All hands have been dealt")
 #cards = player_hand.get_ranks()
 #print(sum(cards[0:]))
 #play = restart()
-
