@@ -17,7 +17,6 @@ def restart():
       print('\nThank you!')
       play = False    
     else:
-      print("Please enter Y or N")
       restart()
     return play  
 
@@ -84,20 +83,22 @@ def compare(player):
     #compare player hands
     print('ok')
 
-
-    
-    
+def test():
+    game_deck = Deck()
+    game_deck.shuffle()    
+    players = Hand()
+    players.add(game_deck.deal())
+    players.add(game_deck.deal())    
+    players.PrintWithIndexes()
     
 play = restart()    
 while(play == True):
     game_start = initialize_game()
     print(game_start)
     while(game_start == True):
-        play_game()
-    
-    
+#        play_game()
+        test()
        
     
     
         #play = restart()
-
