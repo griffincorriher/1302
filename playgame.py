@@ -35,42 +35,40 @@ def play_game():
 def hit(hand):
     #add another card to hand, sum cards in hand and return value
     hand.add(game_deck.deal())
-    display_hands()
+    sum_points(hand)
+    display_hands(game_start)
 
-def display_dealer_hand():
-    dealer_hand.add(dealers_first_card)
-    points = sum(dealer_hand.get_ranks())
-    return points
-
-def display_hands():
+def display_hands(game_start):
+    if(game_start == False):
+        for hand in hands_list:
+            sum_points(hand)
+        print(player_points)
+        game_start = True
+    else:
+        print(player_points)
     #Have logic here if players stand or bust, add dealer card back into hand    
     for name, i in zip(player_names, hands_list):
         print(name,"'s hand:\n",i, "\n")
-    sum_points()
     if(player_state[hands_list.index(dealer_hand)] == still_playing):
         print("Next round")
         print("_"*20)
-
-def sum_points():
-    player_cards.clear()
-    for n, i in zip(range(len(player_names)), hands_list):
-        cards = i.get_ranks()
-        card_values = []
-        card_sum = 0
-        for card in cards:   
-            if(card>=11):
-                card = 10
-            if(card == 1):
-                if(player_points[n] + 11 > MAX_POINTS):
-                    card = 1
-                else:
-                   card = 11
-                print(n)                  
-            card_values.append(card)
-        player_points[n] = sum(card_values)
-        #Creates list of cards for each player
-        player_cards.append(card_values)
-        print(player_points[n]) 
+def sum_points(hand):
+    n = all_hands.index(hand)
+    cards = hand.get_ranks()
+    card_values = []
+    card_sum = 0
+    for card in cards:
+        if(card>=11):
+            card = 10
+        if(card == 1):
+            if(player_points[n] + 11 > MAX_POINTS):
+                card = 1
+            else:
+               card = 11
+        card_values.append(card)
+    player_points[n] = sum(card_values)
+    #Creates list of cards for each player
+    player_cards.append(card_values)
         
 def update_state(state, n):    
     if(player_points[n] > MAX_POINTS):
@@ -105,8 +103,7 @@ def computers_play():
                 state = still_playing
                 hit(hands_list[i])
             else:
-                state = stay
-                
+                state = stay                
             update_state(state, i)
 
 def dealer_play():
@@ -121,7 +118,6 @@ def dealer_play():
             hit(dealer_hand)
         if(player_points[0] >= MAX_DEALER_POINTS):
             state = stay
-        print(state)
         update_state(state, hands_list.index(dealer_hand))
     
 def compare():
@@ -176,7 +172,7 @@ hands_list = [dealer_hand, player_hand, computer1_hand, computer2_hand]
 
 #Running game code/while loop
 
-display_hands()
+display_hands(game_start)
 user_play()
 computers_play()
 dealer_play()
