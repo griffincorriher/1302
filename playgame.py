@@ -31,10 +31,6 @@ def hit(hand):
     hand.add(game_deck.deal())
     display_hands()
     
-def stand(n):
-    state = 1
-    player_state[n] = state
-    
 def compare(player):
     #compare player hands against max_points
     print('ok')
@@ -48,9 +44,10 @@ def display_hands():
     #Have logic here if players stand or bust, add dealer card back into hand    
     for name, i in zip(player_names, hands_list):
         print(name,"'s hand:\n",i, "\n")
-    sum_points() 
-    print("Next round")
-    print("_"*20)
+    sum_points()
+    if(player_state[hands_list.index(dealer_hand)] == 0):
+        print("Next round")
+        print("_"*20)
 
 def sum_points():
     player_cards.clear()
@@ -73,7 +70,6 @@ def sum_points():
         player_cards.append(card_values)
         
 def update_state(state, n):
-    state = 0
     if(player_names[n] == player_names[0]):
         if(player_points[n] >= MAX_DEALER_POINTS):
             state = 1
@@ -94,18 +90,17 @@ def display_points():
         print(name,"'s points:",i, "\n")
 
 def user_play():
-    while(player_state[1] == 0):
+    while(player_state[hands_list.index(player_hand)] == 0):
         print("Would you like to hit or stand?\n")
         answer = input("Enter H for hit and S for stand: \n")
         if answer.upper() == "S":
-            stand(hands_list.index(player_hand))
             state = 1
         elif answer.upper() == "H":
             state = 0
             hit(player_hand)  
         else:
             user_play()
-        update_state(state, 1)
+        update_state(state, hands_list.index(player_hand))
 
 #def computers_play():
 #   for i in range(NUMBER_OPPONENTS):
@@ -123,8 +118,14 @@ def dealer_play():
             dealer_hand.add(dealers_first_card)
 #If dealer is >= 17 points, it doesn't hit. If its not, it hits.
         if(player_points[0] < MAX_DEALER_POINTS):
+            state = 0
             hit(dealer_hand)
-    
+        if(player_points[n] >= MAX_DEALER_POINTS):
+            state = 1
+        update_state(state, hands_list.index(dealer_hand))
+
+
+        
 ##START CODE##
 user = input("What is your name?\n")
 
@@ -170,7 +171,6 @@ display_hands()
 user_play()
 #computers_play()
 dealer_play()
-
 print(player_state)
 
 
