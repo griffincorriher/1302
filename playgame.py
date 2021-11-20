@@ -4,7 +4,7 @@ NUMBER_OPPONENTS = 2
 MAX_POINTS = 21
 MAX_DEALER_POINTS = 17
 user = ''
-player_points = []
+player_points = [0]*(2 + NUMBER_OPPONENTS)
 player_cards = [[0 for j in range(1)] for i in range(2 + NUMBER_OPPONENTS)]
 player_state = [0]*(2 + NUMBER_OPPONENTS) #0 play, 1 stay, 2 bust, 3 win
 game_start = False
@@ -55,8 +55,7 @@ def display_hands():
     print("_"*20)
 
 def sum_points():
-    player_points.clear()
-    player_cards.clear()    
+    player_cards.clear()
     for n, i in zip(range(len(player_names)), hands_list):
         cards = i.get_ranks()
         card_values = []
@@ -65,12 +64,13 @@ def sum_points():
             if(card>=11):
                 card = 10
             if(card == 1):
-                if(player_points[n] > MAX_POINTS):
+                if(player_points[n] + 11 > MAX_POINTS):
                     card = 1
                 else:
                    card = 11
             card_values.append(card)
-        player_points.append(sum(card_values))
+#        player_points.append(sum(card_values))
+        player_points[n] = sum(card_values)
         #Creates list of cards for each player
         player_cards.append(card_values)
         update_state(n)
@@ -141,6 +141,7 @@ hands_list = [dealer_hand, player_hand, computer1_hand, computer2_hand]
 #Running game code/while loop
 display_hands()
 
+
 dealer_play()
 
 print(player_cards)
@@ -151,6 +152,4 @@ print("All hands have been dealt")
 #When all players stay or bust, dealer shows full hand then stays or hits
 
 
-#cards = player_hand.get_ranks()
-#print(sum(cards[0:]))
 #play = restart()
