@@ -100,7 +100,7 @@ def dealer_play():
             hit(dealer_hand)
     
 ##START CODE##
-player = input("What is your name?\n")
+user = input("What is your name?\n")
 
 #Shuffle deck
 game_deck = Deck()
