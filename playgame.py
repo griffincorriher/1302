@@ -6,7 +6,13 @@ MAX_DEALER_POINTS = 17
 user = ''
 player_points = [0]*(2 + NUMBER_OPPONENTS)
 player_cards = [[0 for j in range(1)] for i in range(2 + NUMBER_OPPONENTS)]
-player_state = [0]*(2 + NUMBER_OPPONENTS) #0 play, 1 stay, 2 bust, 3 win
+player_state = [1]*(2 + NUMBER_OPPONENTS) #0 bust, 1 still playing, 2 stay, 3 win
+
+bust = 0
+still_playing = 1
+stay = 2
+win = 3
+
 game_start = False
 
 def restart():
@@ -31,9 +37,10 @@ def hit(hand):
     hand.add(game_deck.deal())
     display_hands()
     
-def compare(player):
+def compare():
     #compare player hands against max_points
-    print('ok')
+#    update_state(win, player)
+    pass
 
 def display_dealer_hand():
     dealer_hand.add(dealers_first_card)
@@ -45,7 +52,7 @@ def display_hands():
     for name, i in zip(player_names, hands_list):
         print(name,"'s hand:\n",i, "\n")
     sum_points()
-    if(player_state[hands_list.index(dealer_hand)] == 0):
+    if(player_state[hands_list.index(dealer_hand)] == still_playing):
         print("Next round")
         print("_"*20)
 
@@ -69,20 +76,11 @@ def sum_points():
         #Creates list of cards for each player
         player_cards.append(card_values)
         
-def update_state(state, n):
-    if(player_names[n] == player_names[0]):
-        if(player_points[n] >= MAX_DEALER_POINTS):
-            state = 1
-            ##TODO##
-        #Compare to other players to see who won
-
-            
+def update_state(state, n):    
     if(player_points[n] > MAX_POINTS):
-        state = 2
-
+        state = bust        
     if(player_points[n] == MAX_POINTS):
-       state = 3
-       
+       state = win     
     player_state[n] = state
        
 def display_points():
@@ -90,41 +88,45 @@ def display_points():
         print(name,"'s points:",i, "\n")
 
 def user_play():
-    while(player_state[hands_list.index(player_hand)] == 0):
-        print("Would you like to hit or stand?\n")
-        answer = input("Enter H for hit and S for stand: \n")
-        if answer.upper() == "S":
-            state = 1
-        elif answer.upper() == "H":
-            state = 0
-            hit(player_hand)  
-        else:
-            user_play()
-        update_state(state, hands_list.index(player_hand))
+    while(player_state[hands_list.index(player_hand)] == still_playing):
+        if(player_points[hands_list.index(player_hand)] < MAX_POINTS):
+            print("Would you like to hit or stand?\n")
+            answer = input("Enter H for hit and S for stand: \n")
+            if answer.upper() == "S":
+                state = stay
+            elif answer.upper() == "H":
+                state = still_playing
+                hit(player_hand)  
+            else:
+                user_play()
+            update_state(state, hands_list.index(player_hand))
 
 #def computers_play():
-#   for i in range(NUMBER_OPPONENTS):
-#       while(player_state[i] == 0):
+#    for i in range(NUMBER_OPPONENTS):
+#    while(player_state[i] == still_playing):
+#        hit(
 #
 #
 #
-
+#
 
 def dealer_play():
 #Dealer plays until game ends
-    while(player_state[0] == 0):
+    while(player_state[0] == still_playing):
 #Checks if dealer has flipped card, and shows flipped card if not already
         if(player_cards[0] == 1):
             dealer_hand.add(dealers_first_card)
 #If dealer is >= 17 points, it doesn't hit. If its not, it hits.
         if(player_points[0] < MAX_DEALER_POINTS):
-            state = 0
+            state = still_playing
             hit(dealer_hand)
-        if(player_points[n] >= MAX_DEALER_POINTS):
-            state = 1
+        if(player_points[0] >= MAX_DEALER_POINTS):
+            state = stay
         update_state(state, hands_list.index(dealer_hand))
 
-
+def compare():
+    for i in player_state:
+        print(i)
         
 ##START CODE##
 user = input("What is your name?\n")
@@ -171,7 +173,7 @@ display_hands()
 user_play()
 #computers_play()
 dealer_play()
-print(player_state)
+compare()
 
 
 #When all players stay or bust, dealer shows full hand then stays or hits
