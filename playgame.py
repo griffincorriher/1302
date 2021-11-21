@@ -5,7 +5,7 @@ MAX_POINTS = 21
 MAX_DEALER_POINTS = 17
 user = ''
 player_points = [0]*(2 + NUMBER_OPPONENTS)
-player_cards = [[0 for j in range(1)] for i in range(2 + NUMBER_OPPONENTS)]
+player_cards = [[None for j in range(1)] for i in range(2 + NUMBER_OPPONENTS)]
 player_state = [1]*(2 + NUMBER_OPPONENTS) #0 bust, 1 still playing, 2 stay, 3 win
 
 bust = 0
@@ -42,16 +42,14 @@ def display_hands(game_start):
     if(game_start == False):
         for hand in hands_list:
             sum_points(hand)
-        print(player_points)
         game_start = True
-    else:
-        print(player_points)
     #Have logic here if players stand or bust, add dealer card back into hand    
     for name, i in zip(player_names, hands_list):
         print(name,"'s hand:\n",i, "\n")
-    if(player_state[hands_list.index(dealer_hand)] == still_playing):
+    if(player_state[hands_list.index(hands_list[0])] == still_playing):
         print("Next round")
         print("_"*20)
+        
 def sum_points(hand):
     n = all_hands.index(hand)
     cards = hand.get_ranks()
@@ -68,7 +66,7 @@ def sum_points(hand):
         card_values.append(card)
     player_points[n] = sum(card_values)
     #Creates list of cards for each player
-    player_cards.append(card_values)
+    player_cards[n] = card_values
         
 def update_state(state, n):    
     if(player_points[n] > MAX_POINTS):
@@ -83,17 +81,17 @@ def display_points():
 
 def user_play():
     while(player_state[1] == still_playing):
-        if(player_points[hands_list.index(player_hand)] < MAX_POINTS):
+        if(player_points[hands_list.index(hands_list[1])] < MAX_POINTS):
             print("Would you like to hit or stand?\n")
             answer = input("Enter H for hit and S for stand: \n")
             if answer.upper() == "S":
                 state = stay
             elif answer.upper() == "H":
                 state = still_playing
-                hit(player_hand)  
+                hit(hands_list[1])  
             else:
                 user_play()
-            update_state(state, hands_list.index(player_hand))
+            update_state(state, hands_list.index(hands_list[1]))
 
 def computers_play():
     for i in range(NUMBER_OPPONENTS):
@@ -111,14 +109,14 @@ def dealer_play():
     while(player_state[0] == still_playing):
 #Checks if dealer has flipped card, and shows flipped card if not already
         if(player_cards[0] == 1):
-            dealer_hand.add(dealers_first_card)
+            hands_list[0].add(dealers_first_card)
 #If dealer is >= 17 points, it doesn't hit. If its not, it hits.
         if(player_points[0] < MAX_DEALER_POINTS):
             state = still_playing
-            hit(dealer_hand)
+            hit(hands_list[0])
         if(player_points[0] >= MAX_DEALER_POINTS):
             state = stay
-        update_state(state, hands_list.index(dealer_hand))
+        update_state(state, hands_list.index(hands_list[0]))
     
 def compare():
     #compare player hands against max_points
@@ -146,28 +144,26 @@ for n in range(NUMBER_OPPONENTS):
 
 #Create player hands
 hands = [None] * len(player_names)
-all_hands = []
 
+all_hands = []
 for i in range(len(hands)):
     hands[i] = Hand()
     hands[i].add(game_deck.deal())
     hands[i].add(game_deck.deal())
     all_hands.append(hands[i])
 
-dealer_hand = all_hands[0]
-dealers_first_card = dealer_hand.discard_top()
-player_hand = all_hands[1]
-
+dealers_first_card = all_hands[0].discard_top()
 ##TODO##
 #for loop to create 'n' computer hands
-computer1_hand = all_hands[2]
-computer2_hand = all_hands[3]
 
-hands_list = [dealer_hand, player_hand, computer1_hand, computer2_hand]
+hands_list = []
+for i in range(len(all_hands)):
+    hands_list.append(all_hands[i])
+print('ok')
 
 ##TODO##
 #append computer hands to hands_list
-#hands_list = [dealer_hand, player_hand]
+#hands_list = [hands_list[0],hands_list[1]]
 #hands_list.append(new_opponents) to append hands into list
 
 #Running game code/while loop
