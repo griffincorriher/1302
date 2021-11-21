@@ -67,6 +67,7 @@ def sum_points(hand):
     player_points[n] = sum(card_values)
     #Creates list of cards for each player
     player_cards[n] = card_values
+    print(player_cards)
         
 def update_state(state, n):    
     if(player_points[n] > MAX_POINTS):
@@ -153,18 +154,11 @@ for i in range(len(hands)):
     all_hands.append(hands[i])
 
 dealers_first_card = all_hands[0].discard_top()
-##TODO##
-#for loop to create 'n' computer hands
 
 hands_list = []
 for i in range(len(all_hands)):
     hands_list.append(all_hands[i])
 print('ok')
-
-##TODO##
-#append computer hands to hands_list
-#hands_list = [hands_list[0],hands_list[1]]
-#hands_list.append(new_opponents) to append hands into list
 
 #Running game code/while loop
 
