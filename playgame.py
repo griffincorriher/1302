@@ -27,13 +27,10 @@ def restart():
       play = False    
     else:
       restart()
-    return play  
-
-def play_game():
-    print()       
+    return play    
 
 def hit(hand):
-    #add another card to hand, sum cards in hand and return value
+    #add another card to hand, sum cards in hand
     hand.add(game_deck.deal())
     sum_points(hand)
     display_hands(game_start)
@@ -42,8 +39,7 @@ def display_hands(game_start):
     if(game_start == False):
         for hand in hands_list:
             sum_points(hand)
-        game_start = True
-    #Have logic here if players stand or bust, add dealer card back into hand    
+        game_start = True   
     for name, i in zip(player_names, hands_list):
         print(name,"'s hand:\n",i, "\n")
     if(player_state[hands_list.index(hands_list[0])] == still_playing):
@@ -63,11 +59,11 @@ def sum_points(hand):
                 card = 1
             else:
                card = 11
-        card_values.append(card)
+        card_values.insert(len(card_values),card)
     player_points[n] = sum(card_values)
     #Creates list of cards for each player
     player_cards[n] = card_values
-    print(player_cards)
+    print(player_cards) #uncomment to see player cards
         
 def update_state(state, n):    
     if(player_points[n] > MAX_POINTS):
@@ -75,14 +71,10 @@ def update_state(state, n):
     if(player_points[n] == MAX_POINTS):
        state = win     
     player_state[n] = state
-       
-def display_points():
-    for name, i in zip(player_names, player_points):
-        print(name,"'s points:",i, "\n")
 
 def user_play():
     while(player_state[1] == still_playing):
-        if(player_points[hands_list.index(hands_list[1])] < MAX_POINTS):
+        if(player_points[hands_list.index(hands_list[1])] <= MAX_POINTS):
             print("Would you like to hit or stand?\n")
             answer = input("Enter H for hit and S for stand: \n")
             if answer.upper() == "S":
@@ -98,7 +90,7 @@ def computers_play():
     for i in range(NUMBER_OPPONENTS):
         i = i + 2
         while(player_state[i] == still_playing):
-            if(player_points[i] < 12):
+            if(player_points[i] < 14):
                 state = still_playing
                 hit(hands_list[i])
             else:
@@ -108,10 +100,10 @@ def computers_play():
 def dealer_play():
 #Dealer plays until game ends
     while(player_state[0] == still_playing):
-#Checks if dealer has flipped card, and shows flipped card if not already
+        #Checks if dealer has flipped card and shows flipped card if not already
         if(player_cards[0] == 1):
             hands_list[0].add(dealers_first_card)
-#If dealer is >= 17 points, it doesn't hit. If its not, it hits.
+        #If dealer is >= 17 points, it doesn't hit. If its not, it hits.
         if(player_points[0] < MAX_DEALER_POINTS):
             state = still_playing
             hit(hands_list[0])
@@ -127,7 +119,40 @@ def compare():
             player_points[max_index] = 0
     winner = player_names[player_points.index(max(player_points))]
     print("player points: ", player_points)
-    print("The winner is", winner)
+    print("The winner is", winner,"\n")
+
+#def deal_cards():
+#
+#
+#
+#   
+
+#Shuffle deck
+game_deck = Deck()
+game_deck.shuffle()
+
+#Create players
+player_names = ['Dealer', user]
+for n in range(NUMBER_OPPONENTS):
+    name = 'Computer%s' % str(int(n)+1)
+    player_names.append(name)
+
+#Create player hands
+hands = [None] * len(player_names)
+
+all_hands = []
+for i in range(len(hands)):
+    hands[i] = Hand()
+    hands[i].add(game_deck.deal())
+    hands[i].add(game_deck.deal())
+    all_hands.append(hands[i])
+
+dealers_first_card = all_hands[0].discard_top()
+
+hands_list = []
+for i in range(len(all_hands)):
+    hands_list.append(all_hands[i])
+
 
         
 ##START CODE##
@@ -158,18 +183,14 @@ dealers_first_card = all_hands[0].discard_top()
 hands_list = []
 for i in range(len(all_hands)):
     hands_list.append(all_hands[i])
-print('ok')
 
 #Running game code/while loop
-
-display_hands(game_start)
-user_play()
-computers_play()
-dealer_play()
-compare()
-print('game over')
-
-#When all players stay or bust, dealer shows full hand then stays or hits
-
-
-#play = restart()
+play = restart()      
+while(play == True):
+#    deal_cards()
+    display_hands(game_start)
+    user_play()
+    computers_play()
+    dealer_play()
+    compare()
+    play = restart()
