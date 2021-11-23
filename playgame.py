@@ -51,7 +51,7 @@ def display_hands(game_start):
     return game_start
         
 def sum_points(hand):
-    n = all_hands.index(hand)
+    n = hands_list.index(hand)
     cards = hand.get_ranks()
     card_values = []
     card_sum = 0
@@ -139,20 +139,16 @@ def deal_cards():
     #Create player hands
     hands = [None] * len(player_names)
 
-    all_hands = []
+    hands_list = []
     for i in range(len(hands)):
         hands[i] = Hand()
         hands[i].add(game_deck.deal())
         hands[i].add(game_deck.deal())
-        all_hands.append(hands[i])
+        hands_list.append(hands[i])
 
-    dealers_first_card = all_hands[0].discard_top()
+    dealers_first_card = hands_list[0].discard_top()
 
-    hands_list = []
-    for i in range(len(all_hands)):
-        hands_list.append(all_hands[i])
-
-    return game_deck, player_names, all_hands, dealers_first_card, hands_list
+    return game_deck, player_names, dealers_first_card, hands_list
         
 ##START CODE##
 user = input("What is your name?\n")
@@ -160,7 +156,7 @@ user = input("What is your name?\n")
 #Running game code/while loop
 play = restart()      
 while(play == True):
-    game_deck, player_names, all_hands, dealers_first_card, hands_list = deal_cards()
+    game_deck, player_names, dealers_first_card, hands_list = deal_cards()
     display_hands(game_start)
     user_play()
     computers_play()
