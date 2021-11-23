@@ -15,6 +15,7 @@ win = 3
 
 game_start = False
 
+# Prompts user if they would like to play again
 def restart():
     global play
     
@@ -38,6 +39,7 @@ def hit(hand):
     sum_points(hand)
     display_hands(game_start)
 
+# Displays player cards for users to see
 def display_hands(game_start):
     if(game_start == False):
         for hand in hands_list:
@@ -49,7 +51,8 @@ def display_hands(game_start):
         print("Next round")
         print("_"*20)
     return game_start
-        
+
+# Method to determine players hand values (aces and face cards)        
 def sum_points(hand):
     n = hands_list.index(hand)
     cards = hand.get_ranks()
@@ -68,7 +71,8 @@ def sum_points(hand):
     #Creates list of cards for each player
     player_cards[n] = card_values
     print(player_cards) #uncomment to see player cards
-        
+
+# Determines if the player wins or busts
 def update_state(state, n):    
     if(player_points[n] > MAX_POINTS):
         state = bust        
@@ -76,6 +80,7 @@ def update_state(state, n):
        state = win     
     player_state[n] = state
 
+# Method to ask the user how they want to play
 def user_play():
     while(player_state[1] == still_playing):
         if(player_points[hands_list.index(hands_list[1])] <= MAX_POINTS):
@@ -90,6 +95,7 @@ def user_play():
                 user_play()
             update_state(state, hands_list.index(hands_list[1]))
 
+# Method to determine how the computer plays (hits if less than 14)
 def computers_play():
     for i in range(NUMBER_OPPONENTS):
         i = i + 2
@@ -100,6 +106,7 @@ def computers_play():
             else:
                 state = stay                
             update_state(state, i)
+# Method to determine how the dealer plays (hits if less than 17)
 
 def dealer_play():
 #Dealer plays until game ends
@@ -125,6 +132,7 @@ def compare():
     print("player points: ", player_points)
     print("The winner is", winner,"\n")
 
+#Method to shuffle deck, create players with hands, returns game_deck, player_names, dealers_first_card and hands_list
 def deal_cards():
     #Shuffle deck    
     game_deck = Deck()
