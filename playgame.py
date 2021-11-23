@@ -1,5 +1,5 @@
 from Card import Card, Hand, Deck
-
+# Variables to determine number of players, the max points a player can get before losing, and the number of point the dealer will stand at
 NUMBER_OPPONENTS = 2
 MAX_POINTS = 21
 MAX_DEALER_POINTS = 17
@@ -162,6 +162,7 @@ def deal_cards():
 user = input("What is your name?\n")
 
 #Running game code/while loop
+#Calls methods necessary for the game to run
 play = restart()      
 while(play == True):
     game_deck, player_names, dealers_first_card, hands_list = deal_cards()
