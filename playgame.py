@@ -17,17 +17,20 @@ game_start = False
 
 def restart():
     global play
+    
     print("Do you want to play blackjack?\n")
     x = input("Enter Y for Yes and N for No: \n")
     if x.upper() == "Y":
       print('Starting game!')
       play = True
+      for n in range(len(player_state)):
+          player_state[n] = 1
     elif x.upper() == "N":
       print('\nThank you!')
       play = False    
     else:
       restart()
-    return play    
+    return play 
 
 def hit(hand):
     #add another card to hand, sum cards in hand
@@ -39,12 +42,13 @@ def display_hands(game_start):
     if(game_start == False):
         for hand in hands_list:
             sum_points(hand)
-        game_start = True   
+        game_start = True
     for name, i in zip(player_names, hands_list):
         print(name,"'s hand:\n",i, "\n")
     if(player_state[hands_list.index(hands_list[0])] == still_playing):
         print("Next round")
         print("_"*20)
+    return game_start
         
 def sum_points(hand):
     n = all_hands.index(hand)
@@ -121,73 +125,42 @@ def compare():
     print("player points: ", player_points)
     print("The winner is", winner,"\n")
 
-#def deal_cards():
-#
-#
-#
-#   
+def deal_cards():
+    #Shuffle deck    
+    game_deck = Deck()
+    game_deck.shuffle()  
 
-#Shuffle deck
-game_deck = Deck()
-game_deck.shuffle()
+    #Create players
+    player_names = ['Dealer', user]
+    for n in range(NUMBER_OPPONENTS):
+        name = 'Computer%s' % str(int(n)+1)
+        player_names.append(name)
 
-#Create players
-player_names = ['Dealer', user]
-for n in range(NUMBER_OPPONENTS):
-    name = 'Computer%s' % str(int(n)+1)
-    player_names.append(name)
+    #Create player hands
+    hands = [None] * len(player_names)
 
-#Create player hands
-hands = [None] * len(player_names)
+    all_hands = []
+    for i in range(len(hands)):
+        hands[i] = Hand()
+        hands[i].add(game_deck.deal())
+        hands[i].add(game_deck.deal())
+        all_hands.append(hands[i])
 
-all_hands = []
-for i in range(len(hands)):
-    hands[i] = Hand()
-    hands[i].add(game_deck.deal())
-    hands[i].add(game_deck.deal())
-    all_hands.append(hands[i])
+    dealers_first_card = all_hands[0].discard_top()
 
-dealers_first_card = all_hands[0].discard_top()
+    hands_list = []
+    for i in range(len(all_hands)):
+        hands_list.append(all_hands[i])
 
-hands_list = []
-for i in range(len(all_hands)):
-    hands_list.append(all_hands[i])
-
-
+    return game_deck, player_names, all_hands, dealers_first_card, hands_list
         
 ##START CODE##
 user = input("What is your name?\n")
 
-#Shuffle deck
-game_deck = Deck()
-game_deck.shuffle()
-
-#Create players
-player_names = ['Dealer', user]
-for n in range(NUMBER_OPPONENTS):
-    name = 'Computer%s' % str(int(n)+1)
-    player_names.append(name)
-
-#Create player hands
-hands = [None] * len(player_names)
-
-all_hands = []
-for i in range(len(hands)):
-    hands[i] = Hand()
-    hands[i].add(game_deck.deal())
-    hands[i].add(game_deck.deal())
-    all_hands.append(hands[i])
-
-dealers_first_card = all_hands[0].discard_top()
-
-hands_list = []
-for i in range(len(all_hands)):
-    hands_list.append(all_hands[i])
-
 #Running game code/while loop
 play = restart()      
 while(play == True):
-#    deal_cards()
+    game_deck, player_names, all_hands, dealers_first_card, hands_list = deal_cards()
     display_hands(game_start)
     user_play()
     computers_play()
